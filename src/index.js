@@ -38,17 +38,18 @@ function onSearchBox (evt) {
   
 };
 
-function renderMarkup (response) {
+function renderMarkup (data) {
    let template = '';
    let refTemplate = '';
   clearTemplate();
+  console.log(data);
 
    if (response.length === 1) {
-    template = createCard(response);
+    template = createCard(data);
     refTemplate = countryInfo;
     console.log(template);
    } else { 
-    template = createListCard(response);
+    template = createListCard(data);
     refTemplate = countriesList;
     console.log(template);
    }
