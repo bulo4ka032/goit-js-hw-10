@@ -23,9 +23,9 @@ function onSearchBox (evt) {
        
         if (response.length > 10) {
             console.log(response);
-            specificInfo(); 
+             specificInfo(); 
         
-            //clearTemplate();
+            clearTemplate();
             return
         } 
         
@@ -33,7 +33,7 @@ function onSearchBox (evt) {
     })
     .catch(error => {
         onFetchError();
-        //clearTemplate();
+        clearTemplate();
     }) 
   
 };
@@ -41,13 +41,16 @@ function onSearchBox (evt) {
 function renderMarkup (response) {
    let template = '';
    let refTemplate = '';
+  clearTemplate();
 
    if (response.length === 1) {
     template = createCard(response);
     refTemplate = countryInfo;
+    console.log(template);
    } else { 
     template = createListCard(response);
     refTemplate = countriesList;
+    console.log(template);
    }
    createMarkup(refTemplate, template);
 }
