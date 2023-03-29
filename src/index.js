@@ -17,7 +17,10 @@ searchBox.addEventListener('input', debounce(onSearchBox, DEBOUNCE_DELAY));
 function onSearchBox (evt) {
     evt.preventDefault();
     const searchQuery = evt.target.value;
-
+   if (!evt.target.value) {
+    clearTemplate()
+    return
+};
     API.fetchCountries(searchQuery)
     .then(response => {
        
@@ -34,6 +37,7 @@ function onSearchBox (evt) {
     .catch(error => {
         onFetchError();
         clearTemplate();
+        console.log(error);
     }) 
   
 };
@@ -42,16 +46,16 @@ function renderMarkup (data) {
    let template = '';
    let refTemplate = '';
   clearTemplate();
-  console.log(data);
+//   console.log(data.length);
 
-   if (response.length === 1) {
+   if (data.length === 1) {
+       refTemplate = countryInfo;
     template = createCard(data);
-    refTemplate = countryInfo;
-    console.log(template);
+   
    } else { 
+       refTemplate = countriesList;
     template = createListCard(data);
-    refTemplate = countriesList;
-    console.log(template);
+    // console.log(template);
    }
    createMarkup(refTemplate, template);
 }
@@ -61,15 +65,16 @@ function renderMarkup (data) {
 //     countryInfo.innerHTML = markUp;
 // }    
 function createCard (response) {
-    const {flag, name, capital, population, languages} = response[0];
+    console.log(response);
+    const {flags, name, capital, population, languages} = response[0];
     return `<div class="card">
     <div class="counry-info">
-        <img src="${flags.svg}" alt="flag of ${name.official}" class="flag">
-        <h1 class="name">{{name.official}}</h1>
+        <div class="wrapper"><img src="${flags.svg}" alt="flag of ${name.official}" class="flag" width="60">
+        <h1 class="name">${name.official}</h1></div>
         <ul class="info-list">
-            <li class="info-item"><span>Capital:</span>${capital}</li>
-            <li class="info-item"><span>Population:</span>${population}</li>
-            <li class="info-item"><span>Languages:</span>${languages}</li>
+            <li class="info-item"><span class="info-title">Capital: </span>${capital}</li>
+            <li class="info-item"><span class="info-title">Population: </span>${population}</li>
+            <li class="info-item"><span class="info-title">Languages: </span>${Object.values(languages)}</li>
         </ul>
     </div>
 </div>`
@@ -79,12 +84,12 @@ function createCard (response) {
 //     countriesList.innerHTML = countryListCardTpl;
 // }
 function createListCard (response) {
-    return response.map(({flag, name}) => {
-        `<div class="countries-card">
-        <img class="list-flag" src="${flag.svg}" alt="">
+    return response.map(({flags, name}) => 
+        `<li class="countries-card">
+        <img class="list-flag" src="${flags.svg}" alt="" width="50">
         <h2 class="list-name">${name.official}</h2>
-      </div>`
-    }).join('')
+      </li>`
+    ).join('')
 }
 
 function createMarkup(ref, markup) {
